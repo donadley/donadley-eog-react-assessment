@@ -52,27 +52,26 @@ const names = [
   'Kelly Snyder',
 ];
 
-const getStyles = (name, personName, theme) => {
+const getStyles = (name, selected, theme) => {
   return {
-    fontWeight:
-      personName.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium,
+    fontWeight: selected.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium,
   };
 };
 
+export default ({ selectionList }) => {
 
-
-export default () => {
+  console.log('selectionList', selectionList);
 
   const classes = useStyles();
   const theme = useTheme();
 
-  const [personName, setPersonName] = React.useState([]);
+  const [selection, setSelection] = React.useState([]);
 
-  const handleChange = (event)  => {
-    setPersonName(event.target.value);
+  const handleChange = event => {
+    setSelection(event.target.value);
   };
 
-  const handleChangeMultiple = (event)  => {
+  const handleChangeMultiple = event => {
     const { options } = event.target;
     const value = [];
     for (let i = 0, l = options.length; i < l; i += 1) {
@@ -80,8 +79,16 @@ export default () => {
         value.push(options[i].value);
       }
     }
-    setPersonName(value);
+    setSelection(value);
   };
+  let selectoptions;
+  if (selectionList && selectionList.length > 0) {
+    selectoptions = selectionList.map(name => (
+      <MenuItem key={name} value={name} style={getStyles(name, selection, theme)}>
+        {name}
+      </MenuItem>
+    ))
+  }
 
   return (
     <div>
@@ -91,7 +98,7 @@ export default () => {
           labelId="demo-mutiple-chip-label"
           id="demo-mutiple-chip"
           multiple
-          value={personName}
+          value={selection}
           onChange={handleChange}
           input={<Input id="select-multiple-chip" />}
           renderValue={selected => (
@@ -103,13 +110,9 @@ export default () => {
           )}
           MenuProps={MenuProps}
         >
-          {names.map(name => (
-            <MenuItem key={name} value={name} style={getStyles(name, personName, theme)}>
-              {name}
-            </MenuItem>
-          ))}
+          {selectoptions}
         </Select>
       </FormControl>
     </div>
   );
-}
+};

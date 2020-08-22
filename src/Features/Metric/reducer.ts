@@ -1,38 +1,25 @@
 import { createSlice, PayloadAction } from 'redux-starter-kit';
 
-export type WeatherForLocation = {
-  description: string;
-  locationName: string;
-  temperatureinCelsius: number;
-};
-
 export type ApiErrorAction = {
   error: string;
 };
 
-const initialState = {
-  temperatureinCelsius: 0,
-  temperatureinFahrenheit: 0,
-  description: '',
-  locationName: '',
-};
+var initialState = {
+  metric: Array<string>()
+}
 
-const toF = (c: number) => (c * 9) / 5 + 32;
 
-const slice = createSlice({
-  name: 'weather',
+const metricSlice = createSlice({
+  name: 'metric',
   initialState,
   reducers: {
-    weatherDataRecevied: (state, action: PayloadAction<WeatherForLocation>) => {
-      const { description, locationName, temperatureinCelsius } = action.payload;
-      state.temperatureinCelsius = temperatureinCelsius;
-      state.temperatureinFahrenheit = toF(temperatureinCelsius);
-      state.description = description;
-      state.locationName = locationName;
+    metricDataReceived: (state, action: PayloadAction<string[]>) => {
+      console.log('reducer, ', action.payload);
+      state.metric = action.payload;      
     },
-    weatherApiErrorReceived: (state, action: PayloadAction<ApiErrorAction>) => state,
+    metricApiErrorReceived: (state, action: PayloadAction<ApiErrorAction>) => state,
   },
 });
 
-export const reducer = slice.reducer;
-export const actions = slice.actions;
+export const actions = metricSlice.actions;
+export const reducer = metricSlice.reducer;

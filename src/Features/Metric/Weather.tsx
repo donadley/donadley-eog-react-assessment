@@ -12,70 +12,49 @@ const client = createClient({
   url: 'https://react.eogresources.com/graphql',
 });
 
-// const query = `
-// query($latLong: WeatherQuery!) {
-//   getWeatherForLocation(latLong: $latLong) {
-//     description
-//     locationName
-//     temperatureinCelsius
-//   }
-// }
-// `;
-
 const query = `
 {
   getMetrics
 }
 `;
 
-const getMetricList = () => {
-  
-}
-
-const getWeather = (state: IState) => {
-  const { temperatureinFahrenheit, description, locationName } = state.weather;
-  return {
-    temperatureinFahrenheit,
-    description,
-    locationName,
-  };
+const getMetricList = (state: IState) => {
+  console.log('getMetricList', state);
+  return state.metric.metric;
 };
 
 export default () => {
   return (
     <Provider value={client}>
-      <Weather />
+      <Metric />
     </Provider>
   );
 };
 
-const Weather = () => {
-  const getLocation = useGeolocation();
-  // Default to houston
-  // const latLong = {
-  //   latitude: getLocation.latitude || 29.7604,
-  //   longitude: getLocation.longitude || -95.3698,
-  // };
+const Metric = () => {
   const dispatch = useDispatch();
-  // const { temperatureinFahrenheit, description, locationName } = useSelector(getWeather);
+  const metricList = useSelector(getMetricList);
 
   const [result] = useQuery({
-    query
+    query,
   });
   const { fetching, data, error } = result;
   useEffect(() => {
     if (error) {
-      // dispatch(actions.weatherApiErrorReceived({ error: error.message }));
+      dispatch(actions.metricApiErrorReceived({ error: error.message }));
       console.error('error', error);
       return;
     }
     if (!data) return;
-    console.log('data', data);
-    // const { getWeatherForLocation } = data;
-    // dispatch(actions.weatherDataRecevied(getWeatherForLocation));
+    console.log('data', data.getMetrics);
+    const { getMetrics } = data;
+    dispatch(actions.metricDataReceived(getMetrics));
+
   }, [dispatch, data, error]);
 
   if (fetching) return <LinearProgress />;
 
-  return <MultipleSelect></MultipleSelect>;
+  
+    return <MultipleSelect selectionList={metricList}></MultipleSelect>;
+
 };

@@ -1,5 +1,5 @@
-import { reducer as weatherReducer } from '../Features/Weather/reducer';
+import { reducer as metricDataReceived } from '../Features/Metric/reducer';
 
 export default {
-  weather: weatherReducer,
+  metric: metricDataReceived,
 };
