@@ -8,7 +8,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from './Avatar';
-import Weather from '../Features/Metric/Weather';
+import Metric from '../Features/Metric/Metric';
 
 const useStyles = makeStyles({
   card: {
@@ -22,8 +22,13 @@ export default () => {
     <Card className={classes.card}>
       <CardHeader title="OK, donadley, you're all setup. Now What?" />
       <CardContent>
-          <Weather />
+          <Metric />
       </CardContent>
     </Card>
   );
 };
+
+// Add ability to select Metrics
+// Display the current metric data
+// Chart historical metric data
+// Submit Your App

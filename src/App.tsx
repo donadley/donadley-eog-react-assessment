@@ -38,9 +38,3 @@ const App = () => (
 );
 
 export default App;
-
-
-// Add ability to select Metrics
-// Display the current metric data
-// Chart historical metric data
-// Submit Your App
