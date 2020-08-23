@@ -39,18 +39,6 @@ const MenuProps = {
   },
 };
 
-const names = [
-  'Oliver Hansen',
-  'Van Henry',
-  'April Tucker',
-  'Ralph Hubbard',
-  'Omar Alexander',
-  'Carlos Abbott',
-  'Miriam Wagner',
-  'Bradley Wilkerson',
-  'Virginia Andrews',
-  'Kelly Snyder',
-];
 
 const getStyles = (name, selected, theme) => {
   return {
@@ -58,7 +46,7 @@ const getStyles = (name, selected, theme) => {
   };
 };
 
-export default ({ selectionList }) => {
+export default ({ selectionList, callback }) => {
 
   console.log('selectionList', selectionList);
 
@@ -69,18 +57,10 @@ export default ({ selectionList }) => {
 
   const handleChange = event => {
     setSelection(event.target.value);
+    callback(event.target.value);
   };
 
-  const handleChangeMultiple = event => {
-    const { options } = event.target;
-    const value = [];
-    for (let i = 0, l = options.length; i < l; i += 1) {
-      if (options[i].selected) {
-        value.push(options[i].value);
-      }
-    }
-    setSelection(value);
-  };
+
   let selectoptions;
   if (selectionList && selectionList.length > 0) {
     selectoptions = selectionList.map(name => (
@@ -93,7 +73,7 @@ export default ({ selectionList }) => {
   return (
     <div>
       <FormControl className={classes.formControl}>
-        <InputLabel id="demo-mutiple-chip-label">Chip</InputLabel>
+        <InputLabel id="demo-mutiple-chip-label">Please select a metrics</InputLabel>
         <Select
           labelId="demo-mutiple-chip-label"
           id="demo-mutiple-chip"

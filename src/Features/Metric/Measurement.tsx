@@ -1,21 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { actions } from './reducer';
+import { actions, selectors } from './reducer';
 import { Provider, createClient, useQuery, useSubscription, defaultExchanges, subscriptionExchange } from 'urql';
 import { devtoolsExchange } from '@urql/devtools';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
-import { useGeolocation } from 'react-use';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import Chip from '../../components/Chip';
-import { IState } from '../../store';
-import MultipleSelect from '../../components/MultipleSelect';
+import LineChart from '../../components/LineChart';
 
-const subscriptionClient = new SubscriptionClient(
-    "ws://react.eogresources.com/graphql",
-    {
-      reconnect: true,
-    }
-  );
+const subscriptionClient = new SubscriptionClient('ws://react.eogresources.com/graphql', {
+  reconnect: true,
+});
 
 const client = createClient({
   url: 'https://react.eogresources.com/graphql',
@@ -23,18 +17,15 @@ const client = createClient({
     devtoolsExchange,
     ...defaultExchanges,
     subscriptionExchange({
-        forwardSubscription: operation => subscriptionClient.request(operation)
-    })
-
-  ]
+      forwardSubscription: operation => subscriptionClient.request(operation),
+    }),
+  ],
 });
 
-const getMeasurements = (state: IState) => {
-  console.log('getMeasurements', state);
-  return state.metric.measurement;
-};
+
 
 export default () => {
+
   return (
     <Provider value={client}>
       <Measurement />
@@ -43,33 +34,51 @@ export default () => {
 };
 
 const Measurement = () => {
+  const thirtyMin = 60000 * 30;
+  const thirtyMinAgo = useRef(new Date(new Date().getTime() - thirtyMin).getTime());
+
   const query = `
-  query($input: MeasurementQuery) {
-    getMeasurements(input: $input) {
+  query($input: [MeasurementQuery]) {
+    getMultipleMeasurements(input: $input) {
       metric
-      at
-      value
-      unit
+      measurements{
+        metric
+        at
+        value
+        unit
+      }
     }
   }
   `;
 
   const dispatch = useDispatch();
-  const measurements = useSelector(getMeasurements);
+  const selectedMetrics = useSelector(selectors.getSelectedMetrics);
+  const measurements = useSelector(selectors.getMeasurements);
 
-  const input = {
-    metricName: "flareTemp",
-    after: Date.now()
+
+  const createInput = () => {
+    if(selectedMetrics.length > 0){
+      return selectedMetrics.map(metricName => {
+        return {
+          metricName: metricName,
+          after: thirtyMinAgo.current
+        }
+      });
+    }else{
+      return [];
+    }
   };
+
+  
+  const input = createInput();
 
   const [result] = useQuery({
     query,
     variables: {
-      input,
-    },
+      input
+    }
   });
 
-  console.log('result',result);
   const { fetching, data, error } = result;
   useEffect(() => {
     if (error) {
@@ -78,51 +87,46 @@ const Measurement = () => {
       return;
     }
     if (!data) return;
-    console.log('data', data);
-    const { getMeasurements } = data;
-    dispatch(actions.measurementDataReceived(getMeasurements));
-  }, []);
+    const { getMultipleMeasurements } = data;
+    dispatch(actions.measurementDataReceived(getMultipleMeasurements));
+  }, [dispatch, data, error]);
 
-  if (fetching) return <LinearProgress />
-  console.log('data', data);
+  if (fetching) return <LinearProgress />;
 
-  return <></>
+  return <LineChart metrics={measurements} />;
 };
 
+// const Subscription = () => {
+//   const query = `
+//   subscription {
+//       newMeasurement {
+//           metric
+//           at
+//           value
+//           unit
+//       }
+//   }
+// `;
 
-const Subscription = () => {
+//   const dispatch = useDispatch();
+//   const measurements = useSelector(selectors.getMeasurements);
 
-  const query = `
-  subscription {
-      newMeasurement {
-          metric
-          at
-          value
-          unit
-      }
-  }
-`;
+//   const input = {
+//     metricName: 'flareTemp',
+//     after: Date.now(),
+//   };
 
-const dispatch = useDispatch();
-const measurements = useSelector(getMeasurements);
+//   const [result] = useSubscription({
+//     query,
+//   });
 
-const input = {
-  metricName: "flareTemp",
-  after: Date.now()
-};
+//   console.log('result', result);
+//   const { fetching, data, error } = result;
 
-const [result] = useSubscription({
-  query
-});
+//   if (!data) return <LinearProgress />;
 
+//   if (fetching) return <LinearProgress />;
+//   console.log('data', data);
 
-console.log('result',result);
-const { fetching, data, error } = result;
-
-if (!data) return <LinearProgress />;
-
-if (fetching) return <LinearProgress />
-console.log('data', data);
-
-return <></>
-};
+//   return <></>;
+// };

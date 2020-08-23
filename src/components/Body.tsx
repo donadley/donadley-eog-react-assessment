@@ -10,7 +10,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Avatar from './Avatar';
 import Metric from '../Features/Metric/Metric';
 import Measurement from '../Features/Metric/Measurement';
-import LineChart from '../components/LineChart';
 
 
 const useStyles = makeStyles({
@@ -30,7 +29,6 @@ export default () => {
         <Measurement />
       </CardContent>
     </Card>
-    <LineChart />
     </>
   );
 };

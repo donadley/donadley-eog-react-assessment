@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import 'tui-chart/dist/tui-chart.css';
 import {LineChart} from '@toast-ui/react-chart';
@@ -22,15 +22,10 @@ const getSeries = metrics => {
     return finished;
 }
 
-const data = {
-  categories: getCategories(exampleMutilpleData.data.getMultipleMeasurements),
-  series: getSeries(exampleMutilpleData.data.getMultipleMeasurements)
-};
+
 
 const options = {
   chart: {
-        width: 1160,
-        height: 650,
         title: 'Metrics'
     },
     yAxis: {
@@ -42,9 +37,9 @@ const options = {
         tickInterval: 'auto'
     },
     series: {
-        showLabel: true,
+        showLabel: false,
         spline: true,
-        showDot: true,
+        showDot: false,
         shifting: true
     },    
     tooltip: {
@@ -52,9 +47,21 @@ const options = {
     }
 };
 
-export default () => (
-  <LineChart
-    data={data} 
-    options={options} 
-  />
-);
+export default (metrics) => {
+
+    console.log('lineChart', metrics);
+    if(metrics.metrics.length > 0){
+        const data = {
+            categories: getCategories(metrics.metrics),
+            series: getSeries(metrics.metrics)
+        };
+
+
+        return <LineChart
+            data={data} 
+            options={options} 
+        />
+    } else {
+        return <></>
+    }
+};
