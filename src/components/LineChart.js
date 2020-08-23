@@ -3,23 +3,45 @@ import React from 'react';
 import 'tui-chart/dist/tui-chart.css';
 import {LineChart} from '@toast-ui/react-chart';
 
-import {exampleMutilpleData, exmpleData} from '../exampleData/mockData';
-
+import {Measurement} from '../utils/types';
 
 const getCategories = metrics => {
     // Collect the timestamp of each metric
-    return metrics[0].measurements.map(metric => new Date(metric.at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}));
+    const firstValue = metrics.values().next().value;
+    if(firstValue && firstValue.length > 0){
+        return firstValue.map(metric => {
+            if(metric && metric.at)
+            {
+                return new Date(metric.at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            }else{
+                return;
+            }
+    })
+}
 }
 
 const getSeries = metrics => {
     // Collect the values of each metric
-    const finished = metrics.map(metric => {
-        return {
-            name: metric.metric,
-            data: metric.measurements.map(metric => metric.value)
+    let series = []
+
+    metrics.forEach((value, key) => {
+        console.log('MAP', value, key);
+        if(value && value.length > 0){
+            series.push({
+                name: key,
+                data: value.map(metric => {
+                    if(metric && metric.value){
+                       return metric.value;
+                    }else{
+                        return;
+                    }
+                })
+            });
         }
     });
-    return finished;
+   
+    console.log('series', series[0]);
+    return series;
 }
 
 
@@ -29,7 +51,6 @@ const options = {
         title: 'Metrics'
     },
     yAxis: {
-        title: 'F°'
     },
     xAxis: {
         title: 'seconds',
@@ -47,13 +68,14 @@ const options = {
     }
 };
 
-export default (metrics) => {
-
+export default (props) => {
+    const {metrics} = props;
     console.log('lineChart', metrics);
-    if(metrics.metrics.length > 0){
+
+    if(metrics && metrics.size > 0){
         const data = {
-            categories: getCategories(metrics.metrics),
-            series: getSeries(metrics.metrics)
+            categories: getCategories(metrics),
+            series: getSeries(metrics)
         };
 
 
