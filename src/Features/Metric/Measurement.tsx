@@ -12,32 +12,44 @@ const client = createClient({
   url: 'https://react.eogresources.com/graphql',
 });
 
-const getMetrics = (state: IState) => {
-  console.log('getMetricList', state);
-  return state.metric.metric;
+const getMeasurements = (state: IState) => {
+  console.log('getMeasurements', state);
+  return state.metric.measurement;
 };
 
 export default () => {
   return (
     <Provider value={client}>
-      <Metric />
+      <Measurement />
     </Provider>
   );
 };
 
-const Metric = () => {
-  // Query for list of available metrics
+const Measurement = () => {
   const query = `
-  {
-    getMetrics
+  query($input: MeasurementQuery) {
+    getMeasurements(input: $input) {
+      metric
+      at
+      value
+      unit
+    }
   }
   `;
 
   const dispatch = useDispatch();
-  const metricList = useSelector(getMetrics);
+  const measurements = useSelector(getMeasurements);
+
+  const input = {
+    metricName: "flareTemp",
+    after: Date.now()
+  };
 
   const [result] = useQuery({
     query,
+    variables: {
+      input,
+    },
   });
   const { fetching, data, error } = result;
   useEffect(() => {
@@ -47,16 +59,12 @@ const Metric = () => {
       return;
     }
     if (!data) return;
-    console.log('data', data.getMetrics);
-    const { getMetrics } = data;
-    dispatch(actions.metricDataReceived(getMetrics));
+    console.log('data', data);
+    const { getMeasurements } = data;
+    dispatch(actions.measurementDataReceived(getMeasurements));
   }, [dispatch, data, error]);
 
-  if (fetching) return <LinearProgress />;
+  if (fetching) return <LinearProgress />
 
-  return (
-    <>
-      <MultipleSelect selectionList={metricList}></MultipleSelect>
-    </>
-  );
+  return <></>
 };
