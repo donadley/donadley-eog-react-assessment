@@ -9,7 +9,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from './Avatar';
 import Metric from '../Features/Metric/Metric';
-import Measurement from '../Features/Metric/Measurement';
+import Chart from '../Features/Metric/Chart';
 
 
 const useStyles = makeStyles({
@@ -23,10 +23,10 @@ export default () => {
   return (
     <>
     <Card className={classes.card}>
-      <CardHeader title="OK, donadley, you're all setup. Now What?" />
+      <CardHeader title="" />
       <CardContent>
         <Metric />
-        <Measurement />
+        <Chart />
       </CardContent>
     </Card>
     </>

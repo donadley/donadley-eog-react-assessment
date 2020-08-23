@@ -4,6 +4,7 @@ import { actions, selectors } from './reducer';
 import { Provider, createClient, useQuery } from 'urql';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import MultipleSelect from '../../components/MultipleSelect';
+import {Measurement, ApiErrorAction} from '../../utils/types';
 
 const client = createClient({
   url: 'https://react.eogresources.com/graphql',

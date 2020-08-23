@@ -2,8 +2,7 @@ import React from 'react';
 
 import 'tui-chart/dist/tui-chart.css';
 import {LineChart} from '@toast-ui/react-chart';
-
-import {exampleMutilpleData, exmpleData} from '../exampleData/mockData';
+import {Measurement} from '../utils/types';
 
 
 const getCategories = metrics => {
@@ -29,7 +28,6 @@ const options = {
         title: 'Metrics'
     },
     yAxis: {
-        title: 'F°'
     },
     xAxis: {
         title: 'seconds',
