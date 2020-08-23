@@ -22,12 +22,15 @@ const useStyles = makeStyles({
 export default () => {
   const classes = useStyles();
   return (
+    <>
     <Card className={classes.card}>
       <CardHeader title="OK, donadley, you're all setup. Now What?" />
       <CardContent>
-          <LineChart />
+        <Metric />
       </CardContent>
     </Card>
+    <LineChart />
+    </>
   );
 };
 
