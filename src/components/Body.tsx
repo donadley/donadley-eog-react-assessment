@@ -27,6 +27,7 @@ export default () => {
       <CardHeader title="OK, donadley, you're all setup. Now What?" />
       <CardContent>
         <Metric />
+        <Measurement />
       </CardContent>
     </Card>
     <LineChart />

@@ -19,7 +19,6 @@ const getSeries = metrics => {
             data: metric.measurements.map(metric => metric.value)
         }
     });
-    console.log('series', finished);
     return finished;
 }
 
@@ -32,8 +31,7 @@ const options = {
   chart: {
         width: 1160,
         height: 650,
-        title: 'Measurements',
-        format: '1,000'
+        title: 'Metrics'
     },
     yAxis: {
         title: 'F°'
