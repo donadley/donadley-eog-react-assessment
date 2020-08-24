@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120,
-    maxWidth: 300,
+    maxWidth: 400,
   },
   chips: {
     display: 'flex',
@@ -40,15 +40,13 @@ const MenuProps = {
 };
 
 
-const getStyles = (name, selected, theme) => {
+const getStyles = (name, selection, theme) => {
   return {
-    fontWeight: selected.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium,
+    fontWeight: selection.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium,
   };
 };
 
 export default ({ selectionList, callback }) => {
-
-  console.log('selectionList', selectionList);
 
   const classes = useStyles();
   const theme = useTheme();
@@ -57,8 +55,11 @@ export default ({ selectionList, callback }) => {
 
   const handleChange = event => {
     setSelection(event.target.value);
-    callback(event.target.value);
   };
+
+  const handleBlur = event => {
+    callback(selection);
+  }
 
 
   let selectoptions;
@@ -80,6 +81,7 @@ export default ({ selectionList, callback }) => {
           multiple
           value={selection}
           onChange={handleChange}
+          onBlur={handleBlur}
           input={<Input id="select-multiple-chip" />}
           renderValue={selected => (
             <div className={classes.chips}>

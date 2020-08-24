@@ -12,13 +12,19 @@ const getCategories = metrics => {
 
 const getSeries = metrics => {
     // Collect the values of each metric
-    const finished = metrics.map(metric => {
+  return metrics.map(metric => {
         return {
             name: metric.metric,
-            data: metric.measurements.map(metric => metric.value)
+            data: metric.measurements.map(metric => {
+                if(metric && metric.value){
+                   return metric.value
+                }else{
+                    return metric.map((prop) => prop.value);
+                }
+            }
+            )
         }
     });
-    return finished;
 }
 
 
@@ -48,7 +54,7 @@ const options = {
 export default (metrics) => {
 
     console.log('lineChart', metrics);
-    if(metrics.metrics.length > 0){
+    if(metrics && metrics.metrics && metrics.metrics.length > 0){
         const data = {
             categories: getCategories(metrics.metrics),
             series: getSeries(metrics.metrics)

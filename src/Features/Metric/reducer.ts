@@ -8,7 +8,7 @@ var initialState: any = {
     received: Array<string>(),
     selected: Array<string>()
   },
-  measurement: [],
+  measurements: [],
   newMeasurements: null
 }
 
@@ -17,12 +17,15 @@ export type State  = {
     received: string[],
     selected: string[]
   };
-  measurement: 
+  measurements: 
   [{
     metric: string,
     measurements: Measurement[],
   }],
-  newMeasurements: Map<string, Measurement[]>
+  newMeasurements: [{
+    metric: string,
+    measurements: Measurement[],
+  }]
   }
 
 // Selectors
@@ -38,7 +41,7 @@ const getSelectedMetrics = (state: IState) => {
 
 const getMeasurements = (state: IState) => {
   console.log('getMeasurements', state);
-  return state.metric.measurement;
+  return state.metric.measurements;
 };
 
 const getNewMeasurements = (state: IState) => {
@@ -58,16 +61,23 @@ const metricSlice = createSlice({
       console.log('metricDataReceived, ', action.payload);
       state.metric.selected = action.payload;      
     },
-    measurementDataReceived: (state, action: PayloadAction<[{
+    measurementDataReceived: (state, action: PayloadAction<{
       metric: string,
       measurements: Measurement[]
-    }]>) => {
+    }[]>) => {
       console.log('measurementDataReceived, ', action.payload);
-      state.measurement = action.payload;
+      state.measurements = action.payload;
     },
-    measurementSubscriptionDataReceived: (state, action: PayloadAction<Map<string, Measurement[]>>) => {
+    measurementSubscriptionDataReceived: (state, action: PayloadAction<Measurement>) => {
+
+      const newMeasurement = action.payload;
+
+      state.measurements.filter((measurement: {
+        metric: string,
+        measurements: Measurement[],
+      }) => measurement.metric === newMeasurement.metric && measurement.measurements && measurement.measurements.length > 0)[0].measurements.push(newMeasurement);
+      
       console.log('measurementSubscriptionDataReceived', action.payload);
-      state.newMeasurements = action.payload;
     },
     metricApiErrorReceived: (state, action: PayloadAction<ApiErrorAction>) => state,
   },

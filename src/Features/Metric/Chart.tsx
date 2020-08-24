@@ -6,7 +6,7 @@ import { devtoolsExchange } from '@urql/devtools';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import LineChart from '../../components/LineChart';
-import {Measurement} from '../../utils/types';
+import { Measurement } from '../../utils/types';
 
 const subscriptionClient = new SubscriptionClient('ws://react.eogresources.com/graphql', {
   reconnect: true,
@@ -24,11 +24,19 @@ const client = createClient({
 });
 
 const useSubscribe = () => {
-
-  const measurements = useSelector(selectors.getMeasurements);
+  const measurements: [
+    {
+      metric: string;
+      measurements: Measurement[];
+    },
+  ] = useSelector(selectors.getMeasurements);
   const selectedMetrices: string[] = useSelector(selectors.getSelectedMetrics);
-  const newMeasurements: Map<string, Measurement[]> = useSelector(selectors.getNewMeasurements);
-
+  // const newMeasurements: [
+  //   {
+  //     metric: string;
+  //     measurements: Measurement[];
+  //   },
+  // ] = useSelector(selectors.getNewMeasurements);
 
   const query = `
   subscription {
@@ -47,7 +55,6 @@ const useSubscribe = () => {
     query,
   });
 
-  console.log('result', result);
   const { fetching, data, error } = result;
 
   useEffect(() => {
@@ -58,27 +65,22 @@ const useSubscribe = () => {
     }
     if (!data) return;
     const { newMeasurement } = data;
-    console.log('selectedMetrices.indexOf(newMeasurement.metric)',selectedMetrices, newMeasurement.metric, measurements);
 
+    if(!newMeasurement) return;
 
-    // if(selectedMetrices.indexOf(newMeasurement.metric) != -1){
-
-    //   newMeasurements.get(newMeasurement.metric)
-    //   const valuesOfMap: Measurement[] | undefined | null = newMeasurements.get(newMeasurement.metric);
-    //   if(valuesOfMap){
-    //     newMeasurements.set(newMeasurement.metric, [...valuesOfMap, newMeasurement.measurements]);
-    //   }
-    //   dispatch(actions.measurementSubscriptionDataReceived(newMeasurements));
-    // }
+    if ( measurements && measurements.length > 0) {
+      if (selectedMetrices.indexOf(newMeasurement.metric) != -1) {   
+        console.log('newMeasurement',newMeasurement);
+        dispatch(actions.measurementSubscriptionDataReceived(newMeasurement));
+      }
+    }
   }, [dispatch, data, error]);
 
-  console.log('data', data);
+  // console.log('data', data);
   return data;
-}
-
+};
 
 export default () => {
-
   return (
     <Provider value={client}>
       <Chart />
@@ -107,29 +109,28 @@ const Chart = () => {
   const dispatch = useDispatch();
   const selectedMetrics = useSelector(selectors.getSelectedMetrics);
   const measurements = useSelector(selectors.getMeasurements);
-
+  const updatedMeasurements = useSelector(selectors.getNewMeasurements);
 
   const createInput = () => {
-    if(selectedMetrics.length > 0){
+    if (selectedMetrics.length > 0) {
       return selectedMetrics.map((metricName: any) => {
         return {
           metricName: metricName,
-          after: thirtyMinAgo.current
-        }
+          after: thirtyMinAgo.current,
+        };
       });
-    }else{
+    } else {
       return [];
     }
   };
 
-  
   const input = createInput();
 
   const [result] = useQuery({
     query,
     variables: {
-      input
-    }
+      input,
+    },
   });
 
   const { fetching, data, error } = result;
@@ -142,6 +143,22 @@ const Chart = () => {
     if (!data) return;
     const { getMultipleMeasurements } = data;
     dispatch(actions.measurementDataReceived(getMultipleMeasurements));
+
+    // const selectedMeasurements = (metric: string) => {
+    //   return getMultipleMeasurements
+    //     .filter((measurement: { metric: string; measurements: Measurement[] }) => measurement.metric === metric)
+    //     .map((metric: { metric: string; measurements: Measurement[] }) => metric.measurements);
+    // };
+
+    // // Collect all of the selected measurements
+    // var selectedMeasurements2 = selectedMetrics.map((metric: string) => {
+    //   return { metric: metric, measurements: selectedMeasurements(metric) };
+    // });
+    // console.log('selectedMeasurements', selectedMeasurements2);
+
+    // dispatch(actions.measurementSubscriptionDataReceived(selectedMeasurements2));
+
+    // newMeasurements[newMeasurement.metric] = getMultipleMeasurements.filter(measruement: any => measruement.metric === newMeasurement.metric).measurements
   }, [dispatch, data, error]);
 
   useSubscribe();
