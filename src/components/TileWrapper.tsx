@@ -26,9 +26,10 @@ export default () => {
 
   const [result] = useSubscription({
     query,
+    pause: selectedMetrics.length === 0
   });
 
-  const { fetching, data, error } = result;
+  const { data, error } = result;
   useEffect(() => {
     if (error) {
       dispatch(actions.metricApiErrorReceived({ error: error.message }));
@@ -42,11 +43,17 @@ export default () => {
     }
   }, [dispatch, data, error]);
 
-  return (
-    <>
-      {newMeasurements.map(({ metric, value }) => {
-        return <Tile metric={metric} value={value}></Tile>;
-      })}
-    </>
-  );
+  if (selectedMetrics.length > 0) {
+    return (
+      <>
+        {newMeasurements.map(({ metric, value }) => {
+            if(selectedMetrics.indexOf(metric) != -1){
+                return <Tile metric={metric} value={value}></Tile>;
+            }
+        })}
+      </>
+    );
+  }else{
+      return <></>
+  }
 };

@@ -9,56 +9,6 @@ import LineChart from '../../components/LineChart';
 import { Measurement } from '../../utils/types';
 
 
-
-const useSubscribe = () => {
-  const measurements: 
-    {
-      metric: string;
-      measurements: Measurement[];
-    }[] = useSelector(selectors.getMeasurements);
-  const selectedMetrices: string[] = useSelector(selectors.getSelectedMetrics);
-
-  const query = `
-  subscription {
-      newMeasurement {
-          metric
-          at
-          value
-          unit
-      }
-  }
-  `;
-
-  const dispatch = useDispatch();
-
-  const [result] = useSubscription({
-    query,
-  });
-
-  const { fetching, data, error } = result;
-
-  useEffect(() => {
-    if (error) {
-      dispatch(actions.metricApiErrorReceived({ error: error.message }));
-      console.error('error', error);
-      return;
-    }
-    if (!data) return;
-    const { newMeasurement } = data;
-
-    if(!newMeasurement) return;
-
-    if ( measurements && measurements.length > 0) {
-      if (selectedMetrices.indexOf(newMeasurement.metric) != -1) {   
-        console.log('newMeasurement',newMeasurement);
-        dispatch(actions.measurementSubscriptionDataReceived(newMeasurement));
-      }
-    }
-  }, [dispatch, data, error]);
-
-  return data;
-};
-
 export default () => {
   const thirtyMin = 60000 * 30;
   const thirtyMinAgo = useRef(new Date(new Date().getTime() - thirtyMin).getTime());
@@ -101,7 +51,7 @@ export default () => {
     variables: {
       input,
     },
-    pollInterval: 5000
+    pollInterval: 10000
   });
 
   const { fetching, data, error } = result;
@@ -116,8 +66,6 @@ export default () => {
     dispatch(actions.measurementDataReceived(getMultipleMeasurements));
 
   }, [dispatch, data, error]);
-
-  // useSubscribe();
 
   if (fetching) return <LinearProgress />;
 
