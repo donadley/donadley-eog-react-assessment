@@ -69,13 +69,18 @@ const metricSlice = createSlice({
       state.measurements = action.payload;
     },
     measurementSubscriptionDataReceived: (state, action: PayloadAction<Measurement>) => {
+      const thrityMinAgo = new Date(new Date().getTime() - 60000 * 3 ).getTime()
+
 
       const newMeasurement = action.payload;
 
-      state.measurements.filter((measurement: {
+      state.measurements     
+      .filter((measurement: {
         metric: string,
         measurements: Measurement[],
-      }) => measurement.metric === newMeasurement.metric && measurement.measurements && measurement.measurements.length > 0)[0].measurements.push(newMeasurement);
+      }) => measurement.metric === newMeasurement.metric && measurement.measurements && measurement.measurements.length > 0)[0].measurements
+      .filter((measurement: Measurement) => new Date(measurement.at).getTime() > thrityMinAgo)
+      .push(newMeasurement);
       
       console.log('measurementSubscriptionDataReceived', action.payload);
     },

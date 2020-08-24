@@ -11,15 +11,15 @@ const getCategories = metrics => {
 }
 
 const getSeries = metrics => {
+
     // Collect the values of each metric
   return metrics.map(metric => {
         return {
             name: metric.metric,
-            data: metric.measurements.map(metric => {
+            data: metric.measurements            
+            .map(metric => {
                 if(metric && metric.value){
                    return metric.value
-                }else{
-                    return metric.map((prop) => prop.value);
                 }
             }
             )
@@ -41,7 +41,6 @@ const options = {
         tickInterval: 'auto'
     },
     series: {
-        showLabel: false,
         spline: true,
         showDot: false,
         shifting: true

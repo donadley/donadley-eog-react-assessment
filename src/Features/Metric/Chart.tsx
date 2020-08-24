@@ -31,12 +31,6 @@ const useSubscribe = () => {
     },
   ] = useSelector(selectors.getMeasurements);
   const selectedMetrices: string[] = useSelector(selectors.getSelectedMetrics);
-  // const newMeasurements: [
-  //   {
-  //     metric: string;
-  //     measurements: Measurement[];
-  //   },
-  // ] = useSelector(selectors.getNewMeasurements);
 
   const query = `
   subscription {
@@ -76,7 +70,6 @@ const useSubscribe = () => {
     }
   }, [dispatch, data, error]);
 
-  // console.log('data', data);
   return data;
 };
 
@@ -109,7 +102,6 @@ const Chart = () => {
   const dispatch = useDispatch();
   const selectedMetrics = useSelector(selectors.getSelectedMetrics);
   const measurements = useSelector(selectors.getMeasurements);
-  const updatedMeasurements = useSelector(selectors.getNewMeasurements);
 
   const createInput = () => {
     if (selectedMetrics.length > 0) {
@@ -144,21 +136,6 @@ const Chart = () => {
     const { getMultipleMeasurements } = data;
     dispatch(actions.measurementDataReceived(getMultipleMeasurements));
 
-    // const selectedMeasurements = (metric: string) => {
-    //   return getMultipleMeasurements
-    //     .filter((measurement: { metric: string; measurements: Measurement[] }) => measurement.metric === metric)
-    //     .map((metric: { metric: string; measurements: Measurement[] }) => metric.measurements);
-    // };
-
-    // // Collect all of the selected measurements
-    // var selectedMeasurements2 = selectedMetrics.map((metric: string) => {
-    //   return { metric: metric, measurements: selectedMeasurements(metric) };
-    // });
-    // console.log('selectedMeasurements', selectedMeasurements2);
-
-    // dispatch(actions.measurementSubscriptionDataReceived(selectedMeasurements2));
-
-    // newMeasurements[newMeasurement.metric] = getMultipleMeasurements.filter(measruement: any => measruement.metric === newMeasurement.metric).measurements
   }, [dispatch, data, error]);
 
   useSubscribe();
