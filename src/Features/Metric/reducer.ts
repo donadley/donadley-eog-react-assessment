@@ -3,13 +3,13 @@ import { IState } from '../../store';
 import {Measurement, ApiErrorAction} from '../../utils/types';
 
 
-var initialState: any = {
+var initialState: State = {
   metric: {
     received: Array<string>(),
     selected: Array<string>()
   },
   measurements: [],
-  newMeasurements: null
+  newMeasurements: []
 }
 
 export type State  = {
@@ -18,14 +18,11 @@ export type State  = {
     selected: string[]
   };
   measurements: 
-  [{
+  {
     metric: string,
     measurements: Measurement[],
-  }],
-  newMeasurements: [{
-    metric: string,
-    measurements: Measurement[],
-  }]
+  }[] | [],
+  newMeasurements: Measurement[]
   }
 
 // Selectors
@@ -83,6 +80,15 @@ const metricSlice = createSlice({
       .push(newMeasurement);
       
       console.log('measurementSubscriptionDataReceived', action.payload);
+    },
+    newMeasurementReceived: (state, action: PayloadAction<Measurement>) => {
+      const {metric, value} = action.payload;
+      const indexOfMeasurement = state.newMeasurements.map((m: Measurement) => m.metric).indexOf(metric);
+      if(indexOfMeasurement === -1){
+        state.newMeasurements.push(action.payload)
+      }else{
+        state.newMeasurements[indexOfMeasurement] = action.payload;
+      }
     },
     metricApiErrorReceived: (state, action: PayloadAction<ApiErrorAction>) => state,
   },

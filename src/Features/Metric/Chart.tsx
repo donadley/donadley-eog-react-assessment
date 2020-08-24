@@ -1,35 +1,21 @@
 import React, { useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { actions, selectors } from './reducer';
-import { Provider, createClient, useQuery, useSubscription, defaultExchanges, subscriptionExchange } from 'urql';
+import { useQuery, useSubscription } from 'urql';
 import { devtoolsExchange } from '@urql/devtools';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import LineChart from '../../components/LineChart';
 import { Measurement } from '../../utils/types';
 
-const subscriptionClient = new SubscriptionClient('ws://react.eogresources.com/graphql', {
-  reconnect: true,
-});
 
-const client = createClient({
-  url: 'https://react.eogresources.com/graphql',
-  exchanges: [
-    devtoolsExchange,
-    ...defaultExchanges,
-    subscriptionExchange({
-      forwardSubscription: operation => subscriptionClient.request(operation),
-    }),
-  ],
-});
 
 const useSubscribe = () => {
-  const measurements: [
+  const measurements: 
     {
       metric: string;
       measurements: Measurement[];
-    },
-  ] = useSelector(selectors.getMeasurements);
+    }[] = useSelector(selectors.getMeasurements);
   const selectedMetrices: string[] = useSelector(selectors.getSelectedMetrics);
 
   const query = `
@@ -74,14 +60,6 @@ const useSubscribe = () => {
 };
 
 export default () => {
-  return (
-    <Provider value={client}>
-      <Chart />
-    </Provider>
-  );
-};
-
-const Chart = () => {
   const thirtyMin = 60000 * 30;
   const thirtyMinAgo = useRef(new Date(new Date().getTime() - thirtyMin).getTime());
 
@@ -123,6 +101,7 @@ const Chart = () => {
     variables: {
       input,
     },
+    pollInterval: 5000
   });
 
   const { fetching, data, error } = result;
@@ -138,7 +117,7 @@ const Chart = () => {
 
   }, [dispatch, data, error]);
 
-  useSubscribe();
+  // useSubscribe();
 
   if (fetching) return <LinearProgress />;
 

@@ -1,4 +1,8 @@
 import React from 'react';
+import { Provider, createClient, useQuery, useSubscription, defaultExchanges, subscriptionExchange } from 'urql';
+import { devtoolsExchange } from '@urql/devtools';
+import { SubscriptionClient } from 'subscriptions-transport-ws';
+
 import Card from '@material-ui/core/Card';
 import CardHeader from './CardHeader';
 import Typography from '@material-ui/core/Typography';
@@ -10,6 +14,22 @@ import { makeStyles } from '@material-ui/core/styles';
 import Avatar from './Avatar';
 import Metric from '../Features/Metric/Metric';
 import Chart from '../Features/Metric/Chart';
+import TileWrapper from '../components/TileWrapper';
+
+const subscriptionClient = new SubscriptionClient('ws://react.eogresources.com/graphql', {
+  reconnect: true,
+});
+
+const client = createClient({
+  url: 'https://react.eogresources.com/graphql',
+  exchanges: [
+    devtoolsExchange,
+    ...defaultExchanges,
+    subscriptionExchange({
+      forwardSubscription: operation => subscriptionClient.request(operation),
+    }),
+  ],
+});
 
 
 const useStyles = makeStyles({
@@ -21,15 +41,16 @@ const useStyles = makeStyles({
 export default () => {
   const classes = useStyles();
   return (
-    <>
+    <Provider value={client}>
     <Card className={classes.card}>
       <CardHeader title="" />
       <CardContent>
         <Metric />
+        <TileWrapper />
         <Chart />
       </CardContent>
     </Card>
-    </>
+    </Provider>
   );
 };
 

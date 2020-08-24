@@ -57,7 +57,7 @@ export default ({ selectionList, callback }) => {
     setSelection(event.target.value);
   };
 
-  const handleBlur = event => {
+  const handleClose = event => {
     callback(selection);
   }
 
@@ -81,7 +81,7 @@ export default ({ selectionList, callback }) => {
           multiple
           value={selection}
           onChange={handleChange}
-          onBlur={handleBlur}
+          onClose={handleClose}
           input={<Input id="select-multiple-chip" />}
           renderValue={selected => (
             <div className={classes.chips}>
