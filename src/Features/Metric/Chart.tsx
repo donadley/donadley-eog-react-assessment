@@ -1,15 +1,9 @@
 import React, { useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { actions, selectors } from './reducer';
-import { useQuery, useSubscription } from 'urql';
-import { devtoolsExchange } from '@urql/devtools';
-import { SubscriptionClient } from 'subscriptions-transport-ws';
+import { useQuery } from 'urql';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import LineChart from '../../components/LineChart';
-import { Measurement } from '../../utils/types';
-
-
-
 
 export default () => {
   const thirtyMin = 60000 * 30;

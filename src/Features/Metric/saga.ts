@@ -9,5 +9,5 @@ function* apiErrorReceived(action: PayloadAction<ApiErrorAction>) {
 }
 
 export default function* watchApiError() {
-  yield takeEvery(metricDataReceived.metricDataReceived.type, apiErrorReceived);
+  yield takeEvery(metricDataReceived.metricApiErrorReceived.type, apiErrorReceived);
 }

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { actions, selectors } from './reducer';
-import { Provider, createClient, useQuery } from 'urql';
+import { useQuery } from 'urql';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Select from '../../components/Select';
 import Box from '@material-ui/core/Box';

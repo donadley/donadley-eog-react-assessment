@@ -27,22 +27,18 @@ export type State  = {
 
 // Selectors
 const getMetrics = (state: IState) => {
-  console.log('getMetrics', state);
   return state.metric.metric.received;
 };
 
 const getSelectedMetrics = (state: IState) => {
-  console.log('getSelectedMetrics', state);
   return state.metric.metric.selected;
 };
 
 const getMeasurements = (state: IState) => {
-  console.log('getMeasurements', state);
   return state.metric.measurements;
 };
 
 const getNewMeasurements = (state: IState) => {
-  console.log('getNewMeasurements', state);
   return state.metric.newMeasurements;
 };
 
@@ -51,18 +47,15 @@ const metricSlice = createSlice({
   initialState,
   reducers: {
     metricDataReceived: (state, action: PayloadAction<string[]>) => {
-      console.log('metricDataReceived, ', action.payload);
       state.metric.received = action.payload;      
     },
     metricDataSelected: (state, action: PayloadAction<string[]>) => {
-      console.log('metricDataReceived, ', action.payload);
       state.metric.selected = action.payload;      
     },
     measurementDataReceived: (state, action: PayloadAction<{
       metric: string,
       measurements: Measurement[]
     }[]>) => {
-      console.log('measurementDataReceived, ', action.payload);
       state.measurements = action.payload;
     },
     measurementSubscriptionDataReceived: (state, action: PayloadAction<Measurement>) => {
@@ -79,10 +72,9 @@ const metricSlice = createSlice({
       .filter((measurement: Measurement) => new Date(measurement.at).getTime() > thrityMinAgo)
       .push(newMeasurement);
       
-      console.log('measurementSubscriptionDataReceived', action.payload);
     },
     newMeasurementReceived: (state, action: PayloadAction<Measurement>) => {
-      const {metric, value} = action.payload;
+      const {metric} = action.payload;
       const indexOfMeasurement = state.newMeasurements.map((m: Measurement) => m.metric).indexOf(metric);
       if(indexOfMeasurement === -1){
         state.newMeasurements.push(action.payload)

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 
-import { Provider, createClient, useQuery, useSubscription, defaultExchanges, subscriptionExchange } from 'urql';
+import { Provider, createClient, defaultExchanges, subscriptionExchange } from 'urql';
 import { devtoolsExchange } from '@urql/devtools';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
