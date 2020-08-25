@@ -9,6 +9,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
 import Chip from '@material-ui/core/Chip';
+import Box from '@material-ui/core/Box';
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -39,7 +40,6 @@ const MenuProps = {
   },
 };
 
-
 const getStyles = (name, selection, theme) => {
   return {
     fontWeight: selection.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium,
@@ -47,7 +47,6 @@ const getStyles = (name, selection, theme) => {
 };
 
 export default ({ selectionList, callback }) => {
-
   const classes = useStyles();
   const theme = useTheme();
 
@@ -59,8 +58,7 @@ export default ({ selectionList, callback }) => {
 
   const handleClose = event => {
     callback(selection);
-  }
-
+  };
 
   let selectoptions;
   if (selectionList && selectionList.length > 0) {
@@ -68,33 +66,35 @@ export default ({ selectionList, callback }) => {
       <MenuItem key={name} value={name} style={getStyles(name, selection, theme)}>
         {name}
       </MenuItem>
-    ))
+    ));
   }
 
   return (
-    <div>
-      <FormControl className={classes.formControl}>
-        <InputLabel id="demo-mutiple-chip-label">Please select a metrics</InputLabel>
-        <Select
-          labelId="demo-mutiple-chip-label"
-          id="demo-mutiple-chip"
-          multiple
-          value={selection}
-          onChange={handleChange}
-          onClose={handleClose}
-          input={<Input id="select-multiple-chip" />}
-          renderValue={selected => (
-            <div className={classes.chips}>
-              {selected.map(value => (
-                <Chip key={value} label={value} className={classes.chip} />
-              ))}
-            </div>
-          )}
-          MenuProps={MenuProps}
-        >
-          {selectoptions}
-        </Select>
-      </FormControl>
+    <div style={{ width: '100%' }}>
+      <Box display="flex" justifyContent="flex-end" p={1} bgcolor="background.paper">
+        <FormControl className={classes.formControl}>
+          <InputLabel id="demo-mutiple-chip-label">Metrics</InputLabel>
+          <Select
+            labelId="demo-mutiple-chip-label"
+            id="demo-mutiple-chip"
+            multiple
+            value={selection}
+            onChange={handleChange}
+            onClose={handleClose}
+            input={<Input id="select-multiple-chip" />}
+            renderValue={selected => (
+              <div className={classes.chips}>
+                {selected.map(value => (
+                  <Chip key={value} label={value} className={classes.chip} />
+                ))}
+              </div>
+            )}
+            MenuProps={MenuProps}
+          >
+            {selectoptions}
+          </Select>
+        </FormControl>
+      </Box>
     </div>
   );
 };

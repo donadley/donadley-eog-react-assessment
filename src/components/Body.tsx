@@ -1,8 +1,7 @@
 import React from 'react';
-import { Provider, createClient, useQuery, useSubscription, defaultExchanges, subscriptionExchange } from 'urql';
-import { devtoolsExchange } from '@urql/devtools';
-import { SubscriptionClient } from 'subscriptions-transport-ws';
+import Grid from '@material-ui/core/Grid';
 
+import Container from '@material-ui/core/Container';
 import Card from '@material-ui/core/Card';
 import CardHeader from './CardHeader';
 import Typography from '@material-ui/core/Typography';
@@ -15,22 +14,7 @@ import Avatar from './Avatar';
 import Metric from '../Features/Metric/Metric';
 import Chart from '../Features/Metric/Chart';
 import TileWrapper from '../components/TileWrapper';
-
-const subscriptionClient = new SubscriptionClient('ws://react.eogresources.com/graphql', {
-  reconnect: true,
-});
-
-const client = createClient({
-  url: 'https://react.eogresources.com/graphql',
-  exchanges: [
-    devtoolsExchange,
-    ...defaultExchanges,
-    subscriptionExchange({
-      forwardSubscription: operation => subscriptionClient.request(operation),
-    }),
-  ],
-});
-
+import Box from '@material-ui/core/Box';
 
 const useStyles = makeStyles({
   card: {
@@ -41,16 +25,17 @@ const useStyles = makeStyles({
 export default () => {
   const classes = useStyles();
   return (
-    <Provider value={client}>
-    <Card className={classes.card}>
-      <CardHeader title="" />
-      <CardContent>
+    <Container maxWidth="md">
+      <Grid item md={12} style={{ backgroundColor: '#cfe8fc' }}>
         <Metric />
-        <TileWrapper />
-        <Chart />
-      </CardContent>
-    </Card>
-    </Provider>
+      </Grid>
+      <Grid item md={12} >
+      <Box display="flex" flexDirection="row" flexWrap="wrap" >
+          <Chart />
+          <TileWrapper />
+      </Box>
+      </Grid>
+    </Container>
   );
 };
 

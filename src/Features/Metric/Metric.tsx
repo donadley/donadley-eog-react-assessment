@@ -3,26 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { actions, selectors } from './reducer';
 import { Provider, createClient, useQuery } from 'urql';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import MultipleSelect from '../../components/MultipleSelect';
-import {Measurement, ApiErrorAction} from '../../utils/types';
-
-const client = createClient({
-  url: 'https://react.eogresources.com/graphql',
-});
-
+import Select from '../../components/Select';
+import Box from '@material-ui/core/Box';
 
 
 export default () => {
-  return (
-    <Provider value={client}>
-      <Metric />
-    </Provider>
-  );
-};
-
-
-
-const Metric = () => {
   // Query for list of available metrics
   const query = `
   {
@@ -55,5 +40,7 @@ const Metric = () => {
 
   if (fetching) return <LinearProgress />;
 
-  return <MultipleSelect selectionList={metricList} callback={updateSelected} ></MultipleSelect>
+  return <Box mt={2}>
+      <Select selectionList={metricList} callback={updateSelected} ></Select>
+    </Box>
 };

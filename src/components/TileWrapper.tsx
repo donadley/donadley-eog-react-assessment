@@ -7,6 +7,9 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { Measurement, ApiErrorAction } from '../utils/types';
 import Tile from './Title';
 
+import Box from '@material-ui/core/Box';
+
+
 export default () => {
   // Query last konwn values
 
@@ -45,13 +48,15 @@ export default () => {
 
   if (selectedMetrics.length > 0) {
     return (
-      <>
+      <Box display="flex" flexDirection="column" flexWrap="wrap" height={450} p={1} m={1}>
         {newMeasurements.map(({ metric, value }) => {
             if(selectedMetrics.indexOf(metric) != -1){
-                return <Tile metric={metric} value={value}></Tile>;
+                return <Box p={1} bgcolor="grey.300">
+                  <Tile metric={metric} value={value}></Tile>
+                  </Box>
             }
         })}
-      </>
+      </Box>
     );
   }else{
       return <></>

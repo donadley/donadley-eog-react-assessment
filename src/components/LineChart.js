@@ -2,7 +2,7 @@ import React from 'react';
 
 import 'tui-chart/dist/tui-chart.css';
 import {LineChart} from '@toast-ui/react-chart';
-import {Measurement} from '../utils/types';
+import Box from '@material-ui/core/Box';
 
 
 const getCategories = metrics => {
@@ -60,10 +60,10 @@ export default (metrics) => {
         };
 
 
-        return <LineChart
+        return <Box mt={2} ><LineChart
             data={data} 
             options={options} 
-        />
+        /></Box>
     } else {
         return <></>
     }

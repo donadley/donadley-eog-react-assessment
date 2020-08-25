@@ -1,15 +1,43 @@
 import * as React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+
+import { Provider, createClient, useQuery, useSubscription, defaultExchanges, subscriptionExchange } from 'urql';
+import { devtoolsExchange } from '@urql/devtools';
+import { SubscriptionClient } from 'subscriptions-transport-ws';
+
+const subscriptionClient = new SubscriptionClient('ws://react.eogresources.com/graphql', {
+  reconnect: true,
+});
+
+const client = createClient({
+  url: 'https://react.eogresources.com/graphql',
+  exchanges: [
+    devtoolsExchange,
+    ...defaultExchanges,
+    subscriptionExchange({
+      forwardSubscription: operation => subscriptionClient.request(operation),
+    }),
+  ],
+});
 
 const useStyles = makeStyles({
-  wrapper: {
-    height: '100vh',
+  root: {
+    flexGrow: 1,
   },
 });
 
 const Wrapper: React.FC = ({ children }) => {
   const classes = useStyles();
-  return <div className={classes.wrapper}>{children}</div>;
+  return (
+    <Provider value={client}>
+      <div className={classes.root}>
+        <Grid container spacing={1}>
+          {children}
+        </Grid>
+      </div>
+    </Provider>
+  );
 };
 
 export default Wrapper;

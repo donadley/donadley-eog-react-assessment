@@ -9,6 +9,8 @@ import LineChart from '../../components/LineChart';
 import { Measurement } from '../../utils/types';
 
 
+
+
 export default () => {
   const thirtyMin = 60000 * 30;
   const thirtyMinAgo = useRef(new Date(new Date().getTime() - thirtyMin).getTime());
@@ -69,5 +71,5 @@ export default () => {
 
   if (fetching) return <LinearProgress />;
 
-  return <LineChart metrics={measurements} />;
+  return <LineChart metrics={measurements} />
 };

@@ -28,11 +28,11 @@ const App = () => (
   <MuiThemeProvider theme={theme}>
     <CssBaseline />
     <Provider store={store}>
-      <Wrapper>
-        <Header />
-        <Body />
-        <ToastContainer />
-      </Wrapper>
+        <Wrapper>
+          <Header />
+          <Body />
+          <ToastContainer />
+        </Wrapper>
     </Provider>
   </MuiThemeProvider>
 );
